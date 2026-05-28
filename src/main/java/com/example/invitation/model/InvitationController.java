@@ -1,0 +1,36 @@
+package com.example.invitation.model; 
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.example.invitation.service.InvitationService;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin("*")
+@RequiredArgsConstructor
+public class InvitationController {
+
+    private final InvitationService invitationService;
+
+    @PostMapping("/generate")
+    public ResponseEntity<byte[]> generate(
+            @RequestParam String nom
+    ) throws Exception {
+
+        byte[] image = invitationService.generate(nom);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=invitation.png"
+                )
+                .contentType(MediaType.IMAGE_PNG)
+                .body(image);
+    }
+}
